@@ -85,14 +85,6 @@ def generate_launch_description():
         )
     }
 
-    update_rate_config_file = PathJoinSubstitution(
-        [
-            description_pkg_share,
-            "config",
-            "robotiq_update_rate.yaml",
-        ]
-    )
-
     controllers_file = "robotiq_controllers.yaml"
     initial_joint_controllers = PathJoinSubstitution(
         [description_pkg_share, "config", controllers_file]
@@ -103,7 +95,6 @@ def generate_launch_description():
         executable="ros2_control_node",
         parameters=[
             robot_description_param,
-            update_rate_config_file,
             initial_joint_controllers,
         ],
     )
@@ -133,10 +124,17 @@ def generate_launch_description():
         ],
     )
 
-    robotiq_gripper_controller_spawner = launch_ros.actions.Node(
+    robot1iq_gripper_controller_spawner = launch_ros.actions.Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["robotiq_gripper_controller", "-c", "/controller_manager"],
+        arguments=["robot1iq_gripper_controller", "-c", "/controller_manager"],
+    )
+
+
+    robot2iq_gripper_controller_spawner = launch_ros.actions.Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["robot2iq_gripper_controller", "-c", "/controller_manager"],
     )
 
     robotiq_activation_controller_spawner = launch_ros.actions.Node(
@@ -149,7 +147,8 @@ def generate_launch_description():
         control_node,
         robot_state_publisher_node,
         joint_state_broadcaster_spawner,
-        robotiq_gripper_controller_spawner,
+        robot1iq_gripper_controller_spawner,
+        robot2iq_gripper_controller_spawner,
         robotiq_activation_controller_spawner,
         rviz_node,
     ]
